@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
 
@@ -15,4 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag Yael-Bu/webapp:${{ github.run_number }}-${GITHUB_SHA}
+    - name: docker login
+      run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+    - name: docker push
+      run: docker push Yael-Bu/webapp:${{ github.run_number }}-${GITHUB_SHA}
